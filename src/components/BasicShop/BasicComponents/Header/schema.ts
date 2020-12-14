@@ -7,7 +7,7 @@ import {
   TNumberDefaultType,
   TTextDefaultType,
   TUploadDefaultType,
-} from '@/components/PanelComponents/FormEditor/types';
+} from '@/core/FormComponents/types';
 import { baseConfig, baseDefault, ICommonBaseType } from '../../common';
 
 export type THeaderEditData = Array<
@@ -70,7 +70,7 @@ const Header: IHeaderSchema = {
         uid: '001',
         name: 'image.png',
         status: 'done',
-        url: 'http://io.nainor.com/uploads/3_1740be8a482.png',
+        url: 'http://49.234.61.19/uploads/3_1740be8a482.png',
       },
     ],
     logoText: '页头Header',

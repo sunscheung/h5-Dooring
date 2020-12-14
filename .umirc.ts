@@ -11,9 +11,9 @@ export default defineConfig({
   devtool: 'source-map',
   antd: {},
   title: '趣谈前端-h5-dooring',
-  exportStatic: {},
+  // exportStatic: {},
   base: '/',
-  publicPath: './',
+  publicPath: '/',
   outputPath: 'dist',
   esbuild: {},
   routes: [
@@ -33,6 +33,10 @@ export default defineConfig({
         {
           path: '/ide',
           component: '../pages/ide',
+        },
+        {
+          path: '/help',
+          component: '../pages/help',
         },
         {
           path: '/login',

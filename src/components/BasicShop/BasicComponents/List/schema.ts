@@ -7,7 +7,7 @@ import {
   TDataListDefaultType,
   TNumberDefaultType,
   TSelectDefaultType,
-} from '@/components/PanelComponents/FormEditor/types';
+} from '@/core/FormComponents/types';
 import { baseConfig, baseDefault, ICommonBaseType } from '../../common';
 export type TListSelectKeyType = '60' | '80' | '100' | '120' | '150';
 export type TListEditData = Array<
@@ -33,6 +33,7 @@ const List: IListSchema = {
       key: 'sourceData',
       name: '数据源',
       type: 'DataList',
+      cropRate: 1,
     },
     {
       key: 'round',
@@ -89,7 +90,7 @@ const List: IListSchema = {
             uid: '001',
             name: 'image.png',
             status: 'done',
-            url: 'http://io.nainor.com/uploads/1_1740c6fbcd9.png',
+            url: 'http://49.234.61.19/uploads/1_1740c6fbcd9.png',
           },
         ],
       },
@@ -103,7 +104,7 @@ const List: IListSchema = {
             uid: '002',
             name: 'image.png',
             status: 'done',
-            url: 'http://io.nainor.com/uploads/1_1740c6fbcd9.png',
+            url: 'http://49.234.61.19/uploads/1_1740c6fbcd9.png',
           },
         ],
       },

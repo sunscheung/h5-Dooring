@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo, useCallback, useContext, useRef } from 'react';
-import { Result, Tabs, Button } from 'antd';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Result, Tabs } from 'antd';
 import {
   PieChartOutlined,
   PlayCircleOutlined,
@@ -13,20 +13,15 @@ import CanvasControl from './components/CanvasControl';
 import SourceBox from './SourceBox';
 import TargetBox from './TargetBox';
 import Calibration from 'components/Calibration';
-import DynamicEngine, { componentsType } from 'components/DynamicEngine';
-import FormEditor from 'components/PanelComponents/FormEditor';
+import DynamicEngine, { componentsType } from '@/core/DynamicEngine';
+import FormRender from '@/core/FormRender';
 
-import template1 from 'components/BasicShop/BasicComponents/template';
-import template2 from 'components/BasicPcShop/BasicComponents/template';
-import mediaTpl1 from 'components/BasicShop/MediaComponents/template';
-import mediaTpl2 from 'components/BasicPcShop/MediaComponents/template';
-import graphTpl1 from 'components/BasicShop/VisualComponents/template';
-import graphTpl2 from 'components/BasicPcShop/VisualComponents/template';
+import template from 'components/BasicShop/BasicComponents/template';
+import mediaTpl from 'components/BasicShop/MediaComponents/template';
+import graphTpl from 'components/BasicShop/VisualComponents/template';
 
-import schema1 from 'components/BasicShop/schema';
-import schema2 from 'components/BasicPcShop/schema';
+import schemaH5 from 'components/BasicShop/schema';
 import { ActionCreators, StateWithHistory } from 'redux-undo';
-import { dooringContext } from '@/layouts';
 import { throttle } from '@/utils/tool';
 
 import styles from './index.less';
@@ -57,46 +52,7 @@ const Container = (props: {
       setRightColla(c);
     };
   }, []);
-  const context = useContext(dooringContext);
-  const curPoint = useMemo(() => {
-    if (context.theme === 'h5') {
-      return pstate ? pstate.curPoint : {};
-    } else {
-      return cstate ? cstate.curPoint : {};
-    }
-  }, [context.theme, cstate, pstate]);
-
-  const schema = useMemo(() => {
-    if (context.theme === 'h5') {
-      return schema1;
-    } else {
-      return schema2;
-    }
-  }, [context.theme]);
-
-  const template = useMemo(() => {
-    if (context.theme === 'h5') {
-      return template1;
-    } else {
-      return template2;
-    }
-  }, [context.theme]);
-
-  const mediaTpl = useMemo(() => {
-    if (context.theme === 'h5') {
-      return mediaTpl1;
-    } else {
-      return mediaTpl2;
-    }
-  }, [context.theme]);
-
-  const graphTpl = useMemo(() => {
-    if (context.theme === 'h5') {
-      return graphTpl1;
-    } else {
-      return graphTpl2;
-    }
-  }, [context.theme]);
+  const curPoint = pstate ? pstate.curPoint : {};
 
   // 指定画布的id
   let canvasId = 'js_canvas';
@@ -133,48 +89,26 @@ const Container = (props: {
   }, []);
 
   const handleFormSave = useMemo(() => {
-    if (context.theme === 'h5') {
-      return (data: any) => {
-        dispatch({
-          type: 'editorModal/modPointData',
-          payload: { ...curPoint, item: { ...curPoint.item, config: data } },
-        });
-      };
-    } else {
-      return (data: any) => {
-        dispatch({
-          type: 'editorPcModal/modPointData',
-          payload: { ...curPoint, item: { ...curPoint.item, config: data } },
-        });
-      };
-    }
-  }, [context.theme, curPoint, dispatch]);
+    return (data: any) => {
+      dispatch({
+        type: 'editorModal/modPointData',
+        payload: { ...curPoint, item: { ...curPoint.item, config: data } },
+      });
+    };
+  }, [curPoint, dispatch]);
 
   const clearData = useCallback(() => {
-    if (context.theme === 'h5') {
-      dispatch({ type: 'editorModal/clearAll' });
-    } else {
-      dispatch({ type: 'editorPcModal/clearAll' });
-    }
-  }, [context.theme, dispatch]);
+    dispatch({ type: 'editorModal/clearAll' });
+  }, [dispatch]);
 
   const handleDel = useMemo(() => {
-    if (context.theme === 'h5') {
-      return (id: any) => {
-        dispatch({
-          type: 'editorModal/delPointData',
-          payload: { id },
-        });
-      };
-    } else {
-      return (id: any) => {
-        dispatch({
-          type: 'editorPcModal/delPointData',
-          payload: { id },
-        });
-      };
-    }
-  }, [context.theme, dispatch]);
+    return (id: any) => {
+      dispatch({
+        type: 'editorModal/delPointData',
+        payload: { id },
+      });
+    };
+  }, [dispatch]);
 
   const redohandler = useMemo(() => {
     return () => {
@@ -187,6 +121,13 @@ const Container = (props: {
       dispatch(ActionCreators.undo());
     };
   }, [dispatch]);
+
+  const importTpl = (data: any) => {
+    dispatch({
+      type: 'editorModal/importTplData',
+      payload: data,
+    });
+  };
 
   useEffect(() => {
     if (window.innerWidth < 1024) {
@@ -219,81 +160,35 @@ const Container = (props: {
 
   const ref = useRef<HTMLDivElement>(null);
   const renderRight = useMemo(() => {
-    if (context.theme === 'h5') {
-      return (
-        <div
-          ref={ref}
-          className={styles.attrSetting}
-          style={{
-            transition: 'all ease-in-out 0.5s',
-            transform: rightColla ? 'translate(100%,0)' : 'translate(0,0)',
-          }}
-        >
-          {pointData.length && curPoint ? (
-            <>
-              <div className={styles.tit}>属性设置</div>
-              <FormEditor
-                config={curPoint.item.editableEl}
-                uid={curPoint.id}
-                defaultValue={curPoint.item.config}
-                onSave={handleFormSave}
-                onDel={handleDel}
-                rightPannelRef={ref}
-              />
-            </>
-          ) : (
-            <div style={{ paddingTop: '100px' }}>
-              <Result
-                status="404"
-                title="还没有数据哦"
-                subTitle="赶快拖拽组件来生成你的H5页面吧～"
-              />
-            </div>
-          )}
-        </div>
-      );
-    } else {
-      return (
-        <div
-          className={styles.attrSetting}
-          style={{
-            transition: 'all ease-in-out 0.5s',
-            transform: rightColla ? 'translate(100%,0)' : 'translate(0,0)',
-          }}
-        >
-          {cpointData.length && curPoint ? (
-            <>
-              <div className={styles.tit}>属性设置</div>
-              <FormEditor
-                config={curPoint.item.editableEl}
-                uid={curPoint.id}
-                defaultValue={curPoint.item.config}
-                onSave={handleFormSave}
-                onDel={handleDel}
-                rightPannelRef={ref}
-              />
-            </>
-          ) : (
-            <div style={{ paddingTop: '100px' }}>
-              <Result
-                status="404"
-                title="还没有数据哦"
-                subTitle="赶快拖拽组件来生成你的H5页面吧～"
-              />
-            </div>
-          )}
-        </div>
-      );
-    }
-  }, [
-    context.theme,
-    cpointData.length,
-    curPoint,
-    handleDel,
-    handleFormSave,
-    pointData.length,
-    rightColla,
-  ]);
+    return (
+      <div
+        ref={ref}
+        className={styles.attrSetting}
+        style={{
+          transition: 'all ease-in-out 0.5s',
+          transform: rightColla ? 'translate(100%,0)' : 'translate(0,0)',
+        }}
+      >
+        {pointData.length && curPoint ? (
+          <>
+            <div className={styles.tit}>属性设置</div>
+            <FormRender
+              config={curPoint.item.editableEl}
+              uid={curPoint.id}
+              defaultValue={curPoint.item.config}
+              onSave={handleFormSave}
+              onDel={handleDel}
+              rightPannelRef={ref}
+            />
+          </>
+        ) : (
+          <div style={{ paddingTop: '100px' }}>
+            <Result status="404" title="还没有数据哦" subTitle="赶快拖拽组件来生成你的H5页面吧～" />
+          </div>
+        )}
+      </div>
+    );
+  }, [cpointData.length, curPoint, handleDel, handleFormSave, pointData.length, rightColla]);
 
   const tabRender = useMemo(() => {
     if (collapsed) {
@@ -314,7 +209,7 @@ const Container = (props: {
                 <TargetBox item={value} key={i} canvasId={canvasId}>
                   <DynamicEngine
                     {...value}
-                    config={schema[value.type as keyof typeof schema].config}
+                    config={schemaH5[value.type as keyof typeof schemaH5].config}
                     componentsType="base"
                     isTpl={true}
                   />
@@ -328,7 +223,7 @@ const Container = (props: {
               <TargetBox item={value} key={i} canvasId={canvasId}>
                 <DynamicEngine
                   {...value}
-                  config={schema[value.type as keyof typeof schema].config}
+                  config={schemaH5[value.type as keyof typeof schemaH5].config}
                   componentsType="media"
                   isTpl={true}
                 />
@@ -341,7 +236,7 @@ const Container = (props: {
               <TargetBox item={value} key={i} canvasId={canvasId}>
                 <DynamicEngine
                   {...value}
-                  config={schema[value.type as keyof typeof schema].config}
+                  config={schemaH5[value.type as keyof typeof schemaH5].config}
                   componentsType={'visible' as componentsType}
                   isTpl={true}
                 />
@@ -351,7 +246,7 @@ const Container = (props: {
         </>
       );
     }
-  }, [canvasId, collapsed, generateHeader, graphTpl, mediaTpl, schema, template]);
+  }, [canvasId, collapsed, generateHeader, graphTpl, mediaTpl, schemaH5, template]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [diffmove, setDiffMove] = useState({
@@ -437,9 +332,10 @@ const Container = (props: {
       <HeaderComponent
         redohandler={redohandler}
         undohandler={undohandler}
-        pointData={context.theme === 'h5' ? pointData : cpointData}
+        pointData={pointData}
         clearData={clearData}
         location={props.location}
+        importTpl={importTpl}
       />
       <div className={styles.container}>
         <div
@@ -514,23 +410,6 @@ const Container = (props: {
           onClick={() => changeRightColla(!rightColla)}
         >
           {!rightColla ? <DoubleRightOutlined /> : <DoubleLeftOutlined />}
-        </div>
-        <div
-          style={{
-            width: rightColla ? 0 : '279px',
-            position: 'absolute',
-            transform: 'translate(0,-10%)',
-            transition: 'all ease-in-out 0.5s',
-            textAlign: 'center',
-            bottom: -5,
-            right: rightColla ? 0 : 16,
-            background: 'hsla(0,0%,88.2%,.7)',
-            padding: rightColla ? 0 : '10px',
-          }}
-        >
-          <Button block type="primary" onClick={() => handleDel(curPoint.id)}>
-            删除
-          </Button>
         </div>
         <div
           style={{

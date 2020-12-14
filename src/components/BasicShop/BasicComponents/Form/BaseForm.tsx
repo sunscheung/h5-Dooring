@@ -1,6 +1,6 @@
 import { Input, Cell, DateSelect, Radio, Select, Checkbox } from 'zarm';
 import styles from './baseForm.less';
-import React, { ReactText } from 'react';
+import React, { ReactText, useState } from 'react';
 import {
   baseFormDateTpl,
   baseFormMyRadioTpl,
@@ -9,8 +9,10 @@ import {
   baseFormNumberTpl,
   baseFormTextAreaTpl,
   baseFormTextTpl,
+  baseFormTextTipTpl,
   baseFormUnionType,
 } from '@/components/PanelComponents/FormEditor/types';
+import { formatTime } from '@/utils/tool';
 // 维护表单控件， 提高form渲染性能
 
 type TBaseForm = {
@@ -91,6 +93,11 @@ const BaseForm: TBaseForm = {
   },
   Date: (props: baseFormDateTpl & { onChange: (v: Date) => void }) => {
     const { label, placeholder, onChange } = props;
+    const [value, setValue] = useState<any>('');
+    const handleChange = (v: any) => {
+      setValue(v);
+      onChange && onChange(formatTime('yyyy-MM-dd', v));
+    };
     return (
       <Cell title={label}>
         <DateSelect
@@ -98,7 +105,8 @@ const BaseForm: TBaseForm = {
           mode="date"
           min="1949-05-15"
           max="2100-05-15"
-          onOk={onChange}
+          value={value}
+          onOk={handleChange}
         />
       </Cell>
     );
@@ -112,6 +120,10 @@ const BaseForm: TBaseForm = {
         <Select dataSource={options} onOk={onChange} />
       </Cell>
     );
+  },
+  MyTextTip: (props: baseFormTextTipTpl) => {
+    const { label, color, fontSize } = props;
+    return <Cell title={<div style={{ color, fontSize }}>{label}</div>}></Cell>;
   },
 };
 

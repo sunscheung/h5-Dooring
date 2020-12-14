@@ -1,5 +1,5 @@
-import React, { useRef, memo, useContext, useState, useEffect } from 'react';
-import { Button, Input, Modal, Select } from 'antd';
+import React, { useRef, memo, useMemo, useContext, useState, useEffect } from 'react';
+import { Button, Input, Modal, Select, Upload, Tooltip, Badge } from 'antd';
 import {
   ArrowLeftOutlined,
   MobileOutlined,
@@ -11,6 +11,8 @@ import {
   FileAddOutlined,
   CodeOutlined,
   SketchOutlined,
+  UploadOutlined,
+  InstagramOutlined,
 } from '@ant-design/icons';
 import { history } from 'umi';
 import QRCode from 'qrcode.react';
@@ -31,11 +33,14 @@ interface HeaderComponentProps {
   clearData: any;
   undohandler: any;
   redohandler: any;
+  importTpl: any;
 }
 
 const HeaderComponent = memo((props: HeaderComponentProps) => {
-  const { pointData, location, clearData, undohandler, redohandler } = props;
+  const { pointData, location, clearData, undohandler, redohandler, importTpl } = props;
   const [showModalIframe, setShowModalIframe] = useState(false);
+  const [showFaceModal, setShowFaceModal] = useState(false);
+  const [faceUrl, setFaceUrl] = useState('');
   const iptRef = useRef<Input>(null);
 
   const toPreview = () => {
@@ -131,6 +136,21 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
     window.location.href = `/h5_plus/login?tid=${tid}`;
   };
 
+  const deleteAll = () => {
+    Modal.confirm({
+      title: '确认清空画布?',
+      okText: '确认',
+      cancelText: '取消',
+      onOk() {
+        clearData();
+      },
+    });
+  };
+
+  const toHelp = () => {
+    window.open('/help');
+  };
+
   const toBack = () => {
     history.push('/');
   };
@@ -170,6 +190,36 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
       setShowModalIframe(false);
     };
   }, []);
+
+  const uploadprops = useMemo(
+    () => ({
+      name: 'file',
+      showUploadList: false,
+      beforeUpload(file, fileList) {
+        // 解析并提取excel数据
+        let reader = new FileReader();
+        reader.onload = function(e: Event) {
+          let data = (e as any).target.result;
+          importTpl && importTpl(JSON.parse(data));
+        };
+        reader.readAsText(file);
+      },
+    }),
+    [],
+  );
+
+  const generatePoster = () => {
+    localStorage.setItem('pointData', JSON.stringify(pointData));
+    setShowModalIframe(true);
+    setTimeout(() => {
+      setShowFaceModal(true);
+    }, 3600);
+  };
+
+  const handleReloadPage = () => {
+    document.getElementById('previewPage').contentWindow.location.reload();
+  };
+
   const { setTheme } = useContext(dooringContext);
   return (
     <div className={styles.header}>
@@ -191,6 +241,11 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
         >
           保存模版
         </Button>
+        <Upload {...uploadprops}>
+          <Button type="link" style={{ marginRight: '8px' }}>
+            <UploadOutlined />
+          </Button>
+        </Upload>
         <Button
           type="link"
           style={{ marginRight: '9px' }}
@@ -231,7 +286,7 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
           type="link"
           style={{ marginRight: '9px' }}
           title="清空"
-          onClick={clearData}
+          onClick={deleteAll}
           disabled={!pointData.length}
         >
           <DeleteOutlined />
@@ -248,12 +303,34 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
         <Button type="link" style={{ marginRight: '9px' }} title="重做" onClick={redohandler}>
           <RedoOutlined />
         </Button>
+        <Tooltip placement="bottom" title="一键生成海报分享图">
+          <Badge dot offset={[-18, 10]}>
+            <Button
+              type="link"
+              style={{ marginRight: '6px' }}
+              onClick={generatePoster}
+              disabled={!pointData.length}
+            >
+              <InstagramOutlined />
+            </Button>
+          </Badge>
+        </Tooltip>
         <Button type="link" onClick={toPreview} disabled={!pointData.length}>
           预览
         </Button>
+        <Button
+          type="link"
+          style={{ marginRight: '9px' }}
+          onClick={toHelp}
+          disabled={!pointData.length}
+          title="使用帮助"
+        >
+          帮助
+        </Button>
       </div>
       <div className={styles.btnArea}>
-        <Select
+        {/* 隐藏pc端切换, 保证代码纯粹 */}
+        {/* <Select
           defaultValue="h5"
           style={{ width: 100, marginRight: 20 }}
           onChange={e => {
@@ -262,7 +339,7 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
         >
           <Select.Option value="h5">h5模式</Select.Option>
           <Select.Option value="pc">pc模式</Select.Option>
-        </Select>
+        </Select> */}
         <Button type="primary" ghost onClick={toOnlineCoding} style={{ marginRight: '12px' }}>
           <CodeOutlined />
           在线编程
@@ -273,18 +350,30 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
         </Button>
       </div>
       <Modal
-        title="正在生成封面..."
+        title="生成封面中...(长时间未反应请点右侧按钮重试)"
         visible={showModalIframe}
         footer={null}
-        width={420}
-        closable={false}
+        width={414}
+        closeIcon={<RedoOutlined />}
         destroyOnClose={true}
+        onCancel={handleReloadPage}
+        maskClosable={false}
       >
         <iframe
-          title="editor"
-          src={`/h5_plus/preview?tid=${props.location.query.tid}&gf=1`}
+          id="previewPage"
+          src={`/preview?tid=${props.location.query.tid}&gf=1`}
           style={{ width: '100%', border: 'none', height: '600px' }}
         ></iframe>
+      </Modal>
+      <Modal
+        title="封面图(右键复制图片)"
+        visible={showFaceModal}
+        footer={null}
+        width={414}
+        destroyOnClose={true}
+        onCancel={() => setShowFaceModal(false)}
+      >
+        <img src={faceUrl} style={{ width: '100%' }} />
       </Modal>
     </div>
   );

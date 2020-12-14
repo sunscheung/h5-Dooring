@@ -3,7 +3,7 @@ import {
   IUploadConfigType,
   TTextDefaultType,
   TUploadDefaultType,
-} from '@/components/PanelComponents/FormEditor/types';
+} from '@/core/FormComponents/types';
 
 export type TVideoEditData = Array<IUploadConfigType | ITextConfigType>;
 export interface IVideoConfig {
@@ -35,7 +35,7 @@ const Video: IVideoSchema = {
         uid: '001',
         name: 'image.png',
         status: 'done',
-        url: 'http://io.nainor.com/uploads/1_1740c6fbcd9.png',
+        url: 'http://49.234.61.19/uploads/1_1740c6fbcd9.png',
       },
     ],
     url: '',

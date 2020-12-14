@@ -11,7 +11,7 @@ import {
   TPosDefaultType,
   TTextDefaultType,
   ITextConfigType,
-} from '@/components/PanelComponents/FormEditor/types';
+} from '@/core/FormComponents/types';
 import { baseConfig, baseDefault, ICommonBaseType } from '../../common';
 
 export type TTextSelectKeyType = 'left' | 'right' | 'center';
@@ -177,7 +177,7 @@ const Image: IImageSchema = {
         uid: '001',
         name: 'image.png',
         status: 'done',
-        url: 'http://io.nainor.com/uploads/bg_174e470dc22.png',
+        url: 'http://49.234.61.19/uploads/bg_174e470dc22.png',
       },
     ],
     round: 0,
