@@ -182,11 +182,23 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
       },
     });
   };
-
+  const generateFace = (type: Number) => {
+    Modal.info({
+      title: '该功能正在升级，可以关注下方公众号实时查看动态',
+      content: (
+        <div style={{ textAlign: 'center' }}>
+          <img src={Code} alt={'趣谈前端' + type} style={{ width: '180px' }} />
+        </div>
+      ),
+      okText: '客官知道啦',
+    });
+  };
   useEffect(() => {
     // 定义截图子页面句柄函数
-    window.getFaceUrl = url => {
-      setFaceUrl(url);
+    window.getFaceUrl = (url: any) => {
+      // 新增模板库功能，但需配合独立serve端调用模板数据
+      // setFaceUrl(url);
+      console.log(url);
       setShowModalIframe(false);
     };
   }, []);

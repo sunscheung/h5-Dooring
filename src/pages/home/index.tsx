@@ -1,13 +1,13 @@
 import React from 'react';
-import { Tabs, message } from 'antd';
+import { Tabs, message, Button } from 'antd';
 import { history } from 'umi';
 import {
   MobileOutlined,
   ConsoleSqlOutlined,
+  GithubOutlined,
   CodeOutlined,
   IdcardOutlined,
 } from '@ant-design/icons';
-import Zan from '@/components/Zan';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -65,12 +65,10 @@ const Home = () => {
         <div className={styles.logoTip}>
           <div className={styles.logo}>
             <span className={styles.logoText} title="H5-Dooring可视化编辑器">
-              H5-Dooring
+              low code
             </span>
-            可视化编辑器
           </div>
           <p style={{ display: 'inline-block', width: '520px', fontSize: '16px', lineHeight: '2' }}>
-            H5-Dooring是一款功能强大，开源免费的H5可视化页面配置解决方案，
             致力于提供一套简单方便、专业可靠、无限可能的H5落地页最佳实践。 技术栈以react为主，
             后台采用nodejs开发。
           </p>
@@ -90,25 +88,21 @@ const Home = () => {
           </div>
         </div>
         <footer className={styles.footer}>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <div style={{ marginTop: '30px' }}>
-              <Zan />
-            </div>
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <div style={{ width: '500px', marginLeft: '40px', marginTop: '32px' }}>
-              <span style={{ marginRight: '24px' }}>更多产品: </span>
-              <a href="http://49.234.61.19/qt" style={{ marginRight: '24px' }} target="_blank">
-                趣图-在线gif动图制作平台
-              </a>
-              <a
-                href="http://49.234.61.19/tool/cssTriangle"
-                style={{ marginRight: '24px' }}
-                target="_blank"
-              >
-                在线css三角形生成器
-              </a>
-            </div>
+          <div>
+            <a href="https://github.com/MrXujiang/h5-Dooring">
+              <GithubOutlined />
+            </a>
+            <p>
+              Welcome to dooring
+              <span role="img" aria-label="welcome">
+                👋
+              </span>
+            </p>
+            <p>
+              <Button type="primary">
+                <a href="https://www.oschina.net/p/h5-dooring">为dooring投票</a>
+              </Button>
+            </p>
           </div>
         </footer>
       </div>
