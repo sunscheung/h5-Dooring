@@ -66,6 +66,14 @@ export interface IColorConfigType {
 
 export type TColorDefaultType = string;
 
+/////////////////
+export interface IRichTextConfigType {
+  key: string;
+  name: string;
+  type: 'RichText';
+}
+export type TRichTextDefaultType = string;
+
 export interface IMutiTextConfigType {
   key: string;
   name: string;
@@ -133,6 +141,10 @@ export interface IPosConfigType {
   key: string;
   name: string;
   type: 'Pos';
+  placeObj: {
+    text: string;
+    link: string;
+  };
 }
 
 export type TPosItem = number | undefined;
