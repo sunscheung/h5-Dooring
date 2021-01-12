@@ -1,9 +1,13 @@
-import React from 'react'
+/*
+ * @Author: Suns
+ * @Date: 2020-12-28 16:05:54
+ * @LastEditTime: 2020-12-29 14:16:41
+ */
+import React from 'react';
 
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DndProvider } from 'react-dnd';
-
-import Container from './Container'
+import Container from './Container';
 
 import styles from './index.less';
 

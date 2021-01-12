@@ -123,6 +123,7 @@ export default {
       return history.listen(({ pathname, query }) => {});
     },
     keyEvent({ dispatch, state }) {
+      debugger;
       // 复制
       key('⌘+c, ctrl+c', () => {
         dispatch({
