@@ -181,28 +181,7 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
       },
     });
   };
-  // if (sdkOpt && sdkOpt.isOpen && sdkOpt.downCode.indexOf("function") > -1) {
-  //   var pageData = {
-  //       pageConfig: pageConfig,
-  //       tpl: pointData
-  //   }
-  //     , fnStr = "(".concat(sdkOpt.downCode, ")(pageData)");
-  //     eval(fnStr)
-  // } else {
-  //     setShowLoading(!0);
-  //     var sid = localStorage.getItem("sid");
-  //     _utils_req__WEBPACK_IMPORTED_MODULE_53__["a"].post("/visible/config/generate", {
-  //         data: {
-  //             pageConfig: pageConfig,
-  //             tpl: pointData
-  //         },
-  //         uk: sid
-  //     }).then(e=>{}
-  //     ).catch(e=>{
-  //         setShowLoading(!1)
-  //     }
-  //   )
-  // }
+
   useEffect(() => {
     // 定义截图子页面句柄函数
     window.getFaceUrl = url => {

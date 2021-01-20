@@ -4,7 +4,7 @@ const staticServer = require('koa-static');
 const koaBody = require('koa-body');
 const cors = require('koa2-cors');
 const logger = require('koa-logger');
-debugger;
+
 const app = new Koa();
 
 app.use(staticServer(resolve(__dirname, './static')));
