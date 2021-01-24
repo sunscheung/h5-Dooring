@@ -11,7 +11,7 @@ interface CarouselTypes extends ICarouselConfig {
 const XCarousel = memo((props: PropsWithChildren<CarouselTypes>) => {
   const { direction, swipeable, autoPlay, isTpl, imgList, round } = props;
   const contentRender = () => {
-    return imgList.map((item: any, i: any) => {
+    return imgList.map((item, i) => {
       return (
         <div className={styles.carousel__item__pic} key={+i} style={{ borderRadius: round + 'px' }}>
           <a href={item.link}>

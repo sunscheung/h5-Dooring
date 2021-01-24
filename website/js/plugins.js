@@ -9738,14 +9738,14 @@ else if (-1 != nAgt.indexOf('Trident')) {
       return (
         !!this._items.length &&
         this._width !== this.$element.width() &&
-        !!this.isVisible() &&
-        (this.enter('resizing'),
-        this.trigger('resize').isDefaultPrevented()
-          ? (this.leave('resizing'), !1)
-          : (this.invalidate('width'),
-            this.refresh(),
-            this.leave('resizing'),
-            void this.trigger('resized')))
+          !!this.isVisible() &&
+            (this.enter('resizing'),
+            this.trigger('resize').isDefaultPrevented()
+              ? (this.leave('resizing'), !1)
+              : (this.invalidate('width'),
+                this.refresh(),
+                this.leave('resizing'),
+                void this.trigger('resized')))
       );
     }),
     (e.prototype.registerEventHandlers = function() {
