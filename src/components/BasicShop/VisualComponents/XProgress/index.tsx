@@ -1,8 +1,7 @@
 import React, { memo } from 'react';
 import { Progress } from 'zarm';
-import styles from './index.less';
 import { IXProgressConfig } from './schema';
-import logo from '@/assets/15-进度.png';
+import logo from '@/assets/progress.png';
 const XProgress = memo((props: IXProgressConfig & { isTpl: boolean }) => {
   const { theme, size, shape, percent, strokeWidth, isTpl } = props;
   return (
@@ -12,7 +11,8 @@ const XProgress = memo((props: IXProgressConfig & { isTpl: boolean }) => {
           <img src={logo} alt=""></img>
         </div>
       ) : (
-        <div className={styles.textWrap} style={{ textAlign: 'center' }}>
+        // <div className={styles.textWrap} style={{ textAlign: 'center' }}>
+        <div style={{ textAlign: 'center' }}>
           <Progress
             shape={shape}
             size={size}

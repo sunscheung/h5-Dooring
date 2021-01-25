@@ -1,5 +1,5 @@
-import React, { useRef, memo, useMemo, useContext, useState, useEffect } from 'react';
-import { Button, Input, Modal, Upload, Tooltip, Badge } from 'antd';
+import React, { useRef, memo, useMemo, useState, useEffect } from 'react';
+import { Button, Input, Modal, Select, Upload, Tooltip, Badge } from 'antd';
 import {
   ArrowLeftOutlined,
   MobileOutlined,
@@ -20,7 +20,6 @@ import { saveAs } from 'file-saver';
 import req from '@/utils/req';
 import Code from '@/assets/code.png';
 import styles from './index.less';
-import { dooringContext } from '@/layouts';
 import MyPopover from 'yh-react-popover';
 
 const { confirm } = Modal;
@@ -182,23 +181,11 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
       },
     });
   };
-  const generateFace = (type: Number) => {
-    Modal.info({
-      title: '该功能正在升级，可以关注下方公众号实时查看动态',
-      content: (
-        <div style={{ textAlign: 'center' }}>
-          <img src={Code} alt={'趣谈前端' + type} style={{ width: '180px' }} />
-        </div>
-      ),
-      okText: '客官知道啦',
-    });
-  };
+
   useEffect(() => {
     // 定义截图子页面句柄函数
-    window.getFaceUrl = (url: any) => {
-      // 新增模板库功能，但需配合独立serve端调用模板数据
-      // setFaceUrl(url);
-      console.log(url);
+    window.getFaceUrl = url => {
+      setFaceUrl(url);
       setShowModalIframe(false);
     };
   }, []);
@@ -229,10 +216,9 @@ const HeaderComponent = memo((props: HeaderComponentProps) => {
   };
 
   const handleReloadPage = () => {
-    document.getElementById('previewPage').contentWindow.location.reload();
+    document.getElementById('previewPage')?.contentWindow.location.reload();
   };
 
-  const { setTheme } = useContext(dooringContext);
   return (
     <div className={styles.header}>
       <div className={styles.logoArea}>
